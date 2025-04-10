@@ -17,14 +17,16 @@ const SignaturePad = () => {
   }, [fontColor, lineWidth, bgColor]);
 
   const startDrawing = (e) => {
-    const { offsetX, offsetY } = e.nativeEvent;
+    const offsetX = e.nativeEvent.offsetX || e.touches[0].clientX - e.target.offsetLeft;
+    const offsetY = e.nativeEvent.offsetY || e.touches[0].clientY - e.target.offsetTop;
     setIsDrawing(true);
     setLastPos({ x: offsetX, y: offsetY });
   };
 
   const draw = (e) => {
     if (!isDrawing) return;
-    const { offsetX, offsetY } = e.nativeEvent;
+    const offsetX = e.nativeEvent.offsetX || e.touches[0].clientX - e.target.offsetLeft;
+    const offsetY = e.nativeEvent.offsetY || e.touches[0].clientY - e.target.offsetTop;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
@@ -124,6 +126,9 @@ const SignaturePad = () => {
         onMouseMove={draw}
         onMouseUp={stopDrawing}
         onMouseLeave={stopDrawing}
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={stopDrawing}
       ></canvas>
       <div className="d-flex justify-content-around mt-4">
         <button className="btn btn-danger" onClick={clearCanvas}>
